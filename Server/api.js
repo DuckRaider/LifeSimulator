@@ -1,0 +1,5 @@
+export const CREATE_USER = "/api/users"
+export const REGISTER = "/api/register"
+export const LOGIN = "/api/login"
+export const BANK = "/api/bank"
+export const BANKACCOUNT = "/api/bankaccount"
