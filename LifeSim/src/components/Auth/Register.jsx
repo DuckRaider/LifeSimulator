@@ -1,11 +1,14 @@
 import { useState } from "react"
 import axios from "axios"
 import { useNavigate } from "react-router-dom";
+import { useUser } from "../../context/UserContext";
+import { parseJwt } from "../../services/JwtServices";
 
 export function Register(){
     const [username, setUsername] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
+    const { user, setUser } = useUser();
     const navigate = useNavigate();
 
     async function handleRegister(){
@@ -19,7 +22,7 @@ export function Register(){
             try{
                 await axios.post('http://localhost:3000/api/register', registerModel)
                 .then((res)=>{
-                    localStorage.setItem("jwt",res.data)
+                    setUser(parseJwt(res.data))
                     console.log("Registration successful")
 
                     navigate('/home')

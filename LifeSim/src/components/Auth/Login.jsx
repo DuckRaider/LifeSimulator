@@ -1,11 +1,15 @@
 import { useState } from "react"
 import axios from "axios"
 import {useNavigate} from "react-router-dom"
+import { useUser } from "../../context/UserContext";
+import { parseJwt } from "../../services/JwtServices";
 
 export function Login(){
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const navigate = useNavigate();
+    const { user, setUser } = useUser();
+
 
     async function handleLogin(){
         if(email != "" && password != ""){
@@ -17,7 +21,7 @@ export function Login(){
             try{
                 await axios.post('http://localhost:3000/api/login', loginModel)
                 .then((res)=>{
-                    localStorage.setItem("jwt",res.data)
+                    setUser(parseJwt(res.data))
                     console.log("Login successful")
 
                     navigate('/home')
