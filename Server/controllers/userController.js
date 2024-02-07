@@ -9,7 +9,6 @@ export const getAllUsers = async (req, res) => {
 
     if(users) res.status(200).json(users);
     else{
-        console.error('Error fetching users:', error);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -24,7 +23,6 @@ export const getUserById = async (req, res) => {
 
     if(user) res.status(200).json(user);
     else{
-        console.error('Error fetching users:', error);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -41,7 +39,6 @@ export const createUser = async (req, res) => {
 
     if(newUser) res.status(201).json(newUser);
     else{
-        console.error('Error creating user:', error);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -66,7 +63,6 @@ export const setBankAccountOfUser = async (req, res) => {
         res.status(201).json(bankAccount)
     }
     else{
-        console.error('Error creating bankaccount:', error);
         res.status(500).send('Internal Server Error');
     }
 }
@@ -77,7 +73,6 @@ export const getAllBankAccounts = async (req, res) => {
 
     if(users) res.status(200).json(users);
     else{
-        console.error('Error fetching users:', error);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -89,7 +84,6 @@ export const deleteAllBankAccounts = async (req, res) => {
 
     if(msg) res.status(200).json(msg)
     else{
-        console.error('Error fetching users:', error);
         res.status(500).send('Internal Server Error');
     }
 }

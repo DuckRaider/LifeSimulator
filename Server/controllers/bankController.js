@@ -5,7 +5,6 @@ export const getAllBanks = async (req, res) => {
 
     if(banks) res.status(200).json(banks);
     else{
-        console.error('Error fetching banks:', error);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -20,7 +19,6 @@ export const createBank = async (req, res) => {
 
     if(newBank) res.status(201).json(newBank);
     else{
-        console.error('Error creating bank:', error);
         res.status(500).send('Internal Server Error');
     }
 };
@@ -34,7 +32,6 @@ export const getBankById = async (req, res) => {
 
     if(users) res.status(200).json(users);
     else{
-        console.error('Error fetching banks:', error);
         res.status(500).send('Internal Server Error');
     }
 };

@@ -18,7 +18,6 @@ export const register = async (req, res) => {
         res.status(201).json(token);
     }
     else{
-        console.error('Error creating user:', error);
         res.status(500).send('Internal Server Error');
     }
 };

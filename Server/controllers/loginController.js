@@ -25,12 +25,10 @@ export const login = async (req, res) => {
         };
 
         if(userFound==false){
-            console.error('Error fetching users:', error);
             res.status(500).send('Internal Server Error');
         }
     }
     else{
-        console.error('Error fetching users:', error);
         res.status(500).send('Internal Server Error');
     }
 };
