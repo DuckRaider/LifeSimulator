@@ -3,18 +3,18 @@ import { useNavigate } from "react-router-dom"
 import { parseJwt } from "../../../services/JwtServices"
 import axios from "axios";
 import { generateIBan } from "../../../services/IBanGenerator";
-
-let jwt = "";
+import { useUser } from "../../../context/UserContext";
 
 export function CreateBankAccount(){
     const [bankid,setBankid] = useState("");
+    const { user, setUser } = useUser();
+
     // const [iban,setIban] = useState("");
     const navigate = useNavigate();
 
     useEffect(()=>{
-        jwt = localStorage.getItem("jwt");
-
-        if(jwt == null){
+        console.log(user)
+        if(user == null){
             navigate("/login")
         }
     },[])
@@ -28,7 +28,7 @@ export function CreateBankAccount(){
                     // res.data[0].id
                     const bankAccountModel = {
                         bank:res.data[0],
-                        user:parseJwt(jwt),
+                        user:user,
                         iban:generateIBan()
                     };
 

@@ -1,9 +1,9 @@
 const express = require('express');
 const Sequelize = require('sequelize');
 const { sequelize } = require('./sequelize/sequelize');
-const { CREATE_USER, REGISTER, LOGIN, BANK, BANKACCOUNT, BANK_BY_ID } = require('./api');
+const { CREATE_USER, REGISTER, LOGIN, BANK, BANKACCOUNT, BANK_BY_ID, TRANSACTION } = require('./api');
 const { tryCatch } = require('./utils/tryCatchFunction');
-const { createUser, getAllUsers, setBankAccountOfUser, getUserById, getAllBankAccounts, deleteAllBankAccounts } = require('./controllers/userController');
+const { createUser, getAllUsers, setBankAccountOfUser, getUserById, getAllBankAccounts, deleteAllBankAccounts, getBankAccountById } = require('./controllers/userController');
 const { register } = require('./controllers/registerController');
 const cors = require("cors");
 const { generateAccessToken } = require('./utils/jwtGenerator');
@@ -13,6 +13,8 @@ const { getAllBanks, createBank, getBankById } = require('./controllers/bankCont
 const { User } = require('./Models/User');
 const { BankAccount } = require('./Models/BankAccount');
 const { Bank } = require('./Models/Bank');
+const { getAllTransactions, createTransaction } = require('./controllers/transactionController');
+const { Transaction } = require('./Models/Transaction');
 
 const app = express();
 const port = 3000;
@@ -51,6 +53,14 @@ BankAccount.belongsTo(User,{
 BankAccount.belongsTo(Bank,{
   foreignKey:"BankId",
   as:"Bank"
+})
+Transaction.belongsTo(BankAccount,{
+  foreignKey:"BankAccountId",
+  as: "BankAccount"
+})
+BankAccount.hasMany(Transaction, {
+  foreignKey: "BankAccountId",
+  as: "Transactions"
 })
   
 
@@ -102,9 +112,17 @@ app.get(BANKACCOUNT, async(req, res)=>{
 app.delete(BANKACCOUNT, async(req, res)=>{
   await tryCatch(deleteAllBankAccounts, req,res)
 })
+app.get(BANKACCOUNT+"/:id", async(req, res)=>{
+  await tryCatch(getBankAccountById, req,res)
+})
 
-
-
+// Transaction
+app.get(TRANSACTION, async(req, res)=>{
+  await tryCatch(getAllTransactions, req, res)
+})
+app.post(TRANSACTION, async(req, res)=>{
+  await tryCatch(createTransaction, req,res)
+})
 
 
 

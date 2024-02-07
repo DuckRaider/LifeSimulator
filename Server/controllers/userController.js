@@ -87,3 +87,16 @@ export const deleteAllBankAccounts = async (req, res) => {
         res.status(500).send('Internal Server Error');
     }
 }
+export const getBankAccountById = async (req, res) => {
+    const bankAccount = await BankAccount.findAll({
+        where:{
+            id:req.query["id"]
+        },
+        include:[{model:Bank, as:"Bank"},{model:User, as:"User"}]
+    });
+
+    if(bankAccount) res.status(200).json(bankAccount);
+    else{
+        res.status(500).send('Internal Server Error');
+    }
+};
