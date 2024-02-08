@@ -1,14 +1,35 @@
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import axios from "axios";
 import { useUser } from "../../../context/UserContext";
+import { parseJwt } from "../../../services/JwtServices";
 
 export function MakeTransaction(){
     const [selectedSource, setSelectedSource] = useState("");
     const [target, setTarget] = useState("");
     const [amount, setAmount] = useState(0);
     const { user, setUser } = useUser();
+    const [bankAccounts, setBankAccounts] = useState([])
+
+    useEffect(()=>{
+
+        const fetchData = async() =>{
+            // Get user by user id
+            if(user){
+                const userId = parseJwt(user).id;
+                await axios.get('http://localhost:3000/api/users/id?id='+userId)
+                .then((res)=>{
+                    setBankAccounts([...res.data[0].BankAccounts])
+                }).catch((e)=>{
+                    console.error(e)
+                })
+            }
+        }
+
+        fetchData()
+    },[])
 
     async function handleSubmit(){
+        console.log(bankAccounts)
         if(target != null && amount > 0){
             const transactionModel = {
                 source:selectedSource,
@@ -33,18 +54,18 @@ export function MakeTransaction(){
     return(
         <div>
             <h2>Make Transaction</h2>
-            {user.BankAccounts &&
+            {bankAccounts &&
                 <select onChange={e => handleSelectChange(e)}>
                     <option value="">Select bank account</option>
-                    {user.BankAccounts.map((item, index) => (
+                    {bankAccounts.map((item, index) => (
                     <option key={index} value={item.iban}>
                         {item.iban}
                     </option>
                     ))}
                 </select>
             }
-            {user==null &&
-                <select value="">
+            {bankAccounts==null &&
+                <select>
                 </select>
             }
             <input

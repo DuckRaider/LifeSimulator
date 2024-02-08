@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom"
-import { parseJwt } from "../../../services/JwtServices"
 import axios from "axios";
 import { generateIBan } from "../../../services/IBanGenerator";
 import { useUser } from "../../../context/UserContext";
+import {parseJwt} from "../../../services/JwtServices"
 
 export function CreateBankAccount(){
     const [bankid,setBankid] = useState("");
@@ -13,7 +13,6 @@ export function CreateBankAccount(){
     const navigate = useNavigate();
 
     useEffect(()=>{
-        console.log(user)
         if(user == null){
             navigate("/login")
         }
@@ -28,7 +27,7 @@ export function CreateBankAccount(){
                     // res.data[0].id
                     const bankAccountModel = {
                         bank:res.data[0],
-                        user:user,
+                        user:parseJwt(user),
                         iban:generateIBan()
                     };
 

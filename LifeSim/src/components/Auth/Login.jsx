@@ -21,7 +21,7 @@ export function Login(){
             try{
                 await axios.post('http://localhost:3000/api/login', loginModel)
                 .then((res)=>{
-                    setUser(parseJwt(res.data))
+                    setUser(res.data)
                     console.log("Login successful")
 
                     navigate('/home')
