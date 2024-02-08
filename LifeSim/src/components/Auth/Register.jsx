@@ -22,7 +22,7 @@ export function Register(){
             try{
                 await axios.post('http://localhost:3000/api/register', registerModel)
                 .then((res)=>{
-                    setUser(parseJwt(res.data))
+                    setUser(res.data)
                     console.log("Registration successful")
 
                     navigate('/home')
