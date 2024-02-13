@@ -15,12 +15,18 @@ export const getAllTransactions = async (req,res) => {
 export const createTransaction = async (req, res) => {
     const {source,target,amount} = req.body;
 
-    const t1 = transferMoney(source, target, -amount)
-    const t2 = transferMoney(target, source, amount)
+    const t1 = await transferMoney(source, target, -amount)
 
-    if(t1 && t2) res.status(200).json([t1,t2])
-    else{
-        res.status(500).send('Internal Server Error');
+    console.log(t1)
+    if(t1 != null){
+        const t2 = await transferMoney(target, source, amount)
+
+        if(t2) res.status(200).json([t1,t2])
+        else{
+            res.status(500).send('Internal Server Error');
+        }
+    }else{
+        res.status(400).send('Not enough money on account with IBan ' + source);
     }
 }
 const transferMoney = async (source, target, amount) => {
@@ -30,20 +36,27 @@ const transferMoney = async (source, target, amount) => {
         }
     });
 
-    const newTransaction = await Transaction.create({
-        source:source,
-        target:target,
-        amount:amount,
-        BankAccountId:BankAccoountObj[0].dataValues.id
-    })
+    let enoughMoneyOnAccount = true;
+    if(amount < 0 && BankAccoountObj[0].dataValues.balance < Math.abs(amount)) enoughMoneyOnAccount = false;
 
-    if(newTransaction){
-        const bankAccountSource = await BankAccount.update(
-            {balance:sequelize.literal(`balance + ${amount}`)},
-            {where:{iban:source}}
-        )
-
-        console.log(bankAccountSource)
-        return bankAccountSource
+    if(enoughMoneyOnAccount){
+        const newTransaction = await Transaction.create({
+            source:source,
+            target:target,
+            amount:amount,
+            BankAccountId:BankAccoountObj[0].dataValues.id
+        })
+    
+        if(newTransaction){
+            const bankAccountSource = await BankAccount.update(
+                {balance:sequelize.literal(`balance + ${amount}`)},
+                {where:{iban:source}}
+            )
+    
+            console.log(bankAccountSource)
+            return bankAccountSource
+        }
+    }else{
+        return null
     }
 }
